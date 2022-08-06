@@ -1,0 +1,8 @@
+{
+    "fmt": {
+        "options": {
+            "lineWidth": 160,
+            "indentWidth": 4
+        }
+    }
+}
