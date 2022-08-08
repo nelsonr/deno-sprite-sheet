@@ -6,13 +6,13 @@ import { copy, ensureDirSync } from "https://deno.land/std@0.151.0/fs/mod.ts";
 /**
  * Renames a list of files.
  *
- * @param {Array<SourceFile>} fileNames List of files to rename
+ * @param {SourceFile[]} fileNames List of files to rename
  * @param {string} inputPath Path for the directory containing the source files
  * @param {string} outputPath Path for the directory for the renamed files
  *
- * @return {Promise<RenamedFile[]>} List of renamed files
+ * @return List of renamed files
  */
-async function renameFiles(fileNames: Array<SourceFile>, inputPath: string, outputPath: string): Promise<RenamedFile[]> {
+async function renameFiles(fileNames: SourceFile[], inputPath: string, outputPath: string): Promise<RenamedFile[]> {
     // Create output directory
     ensureDirSync(outputPath);
 

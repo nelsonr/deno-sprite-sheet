@@ -2,8 +2,8 @@ import { SpritesmithCoordinates, SpritesmithResult } from "./types.d.ts";
 
 import * as path from "https://deno.land/std@0.151.0/path/mod.ts";
 import { ensureDirSync } from "https://deno.land/std@0.151.0/fs/mod.ts";
-import outdent from "https://esm.sh/outdent@0.8.0";
 import { createRequire } from "https://deno.land/std@0.151.0/node/module.ts";
+import outdent from "https://esm.sh/outdent@0.8.0";
 
 const { writeFile, writeTextFile } = Deno;
 
@@ -25,11 +25,11 @@ interface SpriteSheet {
 export function createSpriteSheet(images: string[], outputPath: string, fileName: string) {
     const spriteSheetPath = path.join(outputPath, `${fileName}.png`);
     const styleSheetPath = path.join(outputPath, `${fileName}.css`);
-    
+
     if (images.length < 1) {
         throw new Error("No images provided!");
     }
-    
+
     const spritesheet = generateSpriteSheet(images, fileName);
 
     spritesheet.then(
@@ -66,7 +66,7 @@ export function generateSpriteSheet(images: string[], fileName: string): Promise
                 // Try to infer the image size from the image width
                 // This only works if every image has the same dimensions
                 if (!imageSize) {
-                    const coordinatesObj: SpritesmithCoordinates = Object.entries(result.coordinates)[0][1];
+                    const coordinatesObj = Object.entries(result.coordinates)[0][1];
                     imageSize = coordinatesObj.width;
                 }
 
@@ -84,12 +84,12 @@ export function generateSpriteSheet(images: string[], fileName: string): Promise
 /**
  * Generates a style sheet with the coordinates of each image of a sprite sheet.
  *
- * @param {object} coords An object with coordinates of each image
+ * @param {object} coordinates An object with coordinates of each sprite
  * @param {number} spriteSize The original size of the images used in the sprite sheet
  * @param {string} spriteSheetFileName The name of the sprite sheet file
  * @returns a CSS style sheet
  */
-function generateStyleSheet(coords: SpritesmithCoordinates[], spriteSize: number, spriteSheetFileName: string) {
+function generateStyleSheet(coordinates: SpritesmithCoordinates, spriteSize: number, spriteSheetFileName: string) {
     // The default size for rendering each sprite image
     // This can be overriden by changing the value of the '--size' property in the '.sprite' element
     const targetSpriteSize = 32;
@@ -118,21 +118,21 @@ function generateStyleSheet(coords: SpritesmithCoordinates[], spriteSize: number
 
     `;
 
-    // Create sprite id from the file name (without file extension)
+    // Get the sprite name from a file path (without file extension)
     // Replace all periods and spaces in the file name for hyphens
-    // Example: 'boat.large.png' => 'boat-large'
-    const createSpriteId = (fileName: string) => {
+    // Example: 'images/boat.large.png' => 'boat-large'
+    const getSpriteName = (filePath: string) => {
         const charsToReplace = /[\. ]+/g;
 
-        return path.basename(fileName, path.extname(fileName)).replaceAll(charsToReplace, "-");
+        return path.basename(filePath, path.extname(filePath)).replaceAll(charsToReplace, "-");
     };
 
-    for (const key in coords) {
-        const spriteId = createSpriteId(key);
-        const { x, y } = coords[key];
+    for (const filePath in coordinates) {
+        const spriteName = getSpriteName(filePath);
+        const { x, y } = coordinates[filePath];
 
         css += outdent`
-            .sprite--${spriteId}:after {
+            .sprite--${spriteName}:after {
                 background-position: -${x}px -${y}px;
             }
 

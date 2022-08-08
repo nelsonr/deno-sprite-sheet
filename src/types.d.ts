@@ -1,29 +1,31 @@
-export interface SourceFile {
+export type SourceFile = {
     fileName: string;
     fileNameNew: string;
 }
 
-export interface RenamedFile {
+export type RenamedFile = {
     fileNameOld: string;
     fileName: string;
     filePath: string;
 }
 
-export interface Country {
+export type Country = {
     name: string;
     code: string;
 }
 
-interface SpritesmithCoordinates {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+export type SpritesmithCoordinates = {
+    [filePath: string]: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    }
 }
 
-interface SpritesmithResult {
+export type SpritesmithResult = {
     image: Uint8Array;
-    coordinates: SpritesmithCoordinates[];
+    coordinates: SpritesmithCoordinates;
     properties: {
         width: number;
         height: number;
