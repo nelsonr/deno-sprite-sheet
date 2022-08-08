@@ -3,7 +3,7 @@ import { Country, SourceFile } from "./types.d.ts";
 import config from "../config.json" assert { type: "json" };
 import countries from "../assets/flags.json" assert { type: "json" };
 import renameFiles from "./rename_files.ts";
-import generateSpriteSheet from "./generate_sprites.ts";
+import { createSpriteSheet } from "./spritesheet.ts";
 
 async function main() {
     const countriesWithCode: Country[] = countries.filter((country: Country) => country.code !== "");
@@ -22,13 +22,12 @@ async function main() {
 
     console.log("Renamed flag images count: ", renamedFlagImages.length);
 
-    const filteredCountries = countriesWithCode.filter((country) => {
-        return renamedFlagImages.find((file) => file.fileName.includes(country.code)) !== undefined;
-    });
+    const spriteSheetImages = renamedFlagImages.map((image) => image.filePath);
 
-    generateSpriteSheet(
-        filteredCountries,
-        config.imagesOutputPath,
+    console.log("Generating sprite sheet assets...");
+
+    createSpriteSheet(
+        spriteSheetImages,
         config.buildPath,
         config.fileName,
     );
