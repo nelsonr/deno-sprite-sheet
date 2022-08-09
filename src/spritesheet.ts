@@ -1,4 +1,4 @@
-import { SpritesmithCoordinates, SpritesmithResult } from "./types.d.ts";
+import { SpriteSheet, SpritesmithCoordinates, SpritesmithResult } from "./types.d.ts";
 
 import * as path from "https://deno.land/std@0.151.0/path/mod.ts";
 import { ensureDirSync } from "https://deno.land/std@0.151.0/fs/mod.ts";
@@ -9,11 +9,6 @@ const { writeFile, writeTextFile } = Deno;
 
 const require = createRequire(import.meta.url);
 const Spritesmith = require("spritesmith");
-
-interface SpriteSheet {
-    image: Uint8Array;
-    css: string;
-}
 
 /**
  * Generates the CSS sprite sheet from a list of images.
@@ -33,7 +28,7 @@ export function createSpriteSheet(images: string[], outputPath: string, fileName
     const spritesheet = generateSpriteSheet(images, fileName);
 
     spritesheet.then(
-        (result) => {
+        (result: SpriteSheet) => {
             // Create output directory
             ensureDirSync(outputPath);
 
@@ -50,7 +45,7 @@ export function createSpriteSheet(images: string[], outputPath: string, fileName
 }
 
 export function generateSpriteSheet(images: string[], fileName: string): Promise<SpriteSheet> {
-    let imageSize = 0;
+    let imageSize: number | null = null;
 
     if (images.length < 1) {
         throw new Error("No images provided!");
